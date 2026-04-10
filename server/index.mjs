@@ -8,6 +8,7 @@ const SERVER_PORT=process.env.SERVER_PORT
 const CLIENT_PORT=process.env.CLIENT_PORT
 
 const app = express()
+app.use(express.json())
 
 app.use(cors({origin:`http://localhost:${CLIENT_PORT}`,credentials:true}))
 app.use(Router)

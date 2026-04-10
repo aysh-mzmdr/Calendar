@@ -19,13 +19,38 @@ const COLORS = [
   { name: 'Purple', value: 'purple' },
 ];
 
+const SERVER_PORT = import.meta.env.VITE_SERVER_PORT
+
 export default function Calendar() {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [dateData, setDateData] = useState({});
   const [modalState, setModalState] = useState({ isOpen: false, date: null });
   const [activeNote, setActiveNote] = useState('');
   const [activeColor, setActiveColor] = useState('');
-  const [theme, setTheme] = useState('light'); // Theme state
+  const [theme, setTheme] = useState(() => {
+    const themeData = localStorage.getItem("theme")
+    return themeData ? themeData : 'light'
+  });                                                         
+
+  useEffect(() => {
+    localStorage.setItem("theme",theme)
+  },[theme])
+
+  useEffect(() => {
+    fetch(`http://localhost:${SERVER_PORT}/api/getDates`,{credentials:'include'})
+    .then(response => response.json())
+    .then(data => {
+      const tempData = {};
+      data.forEach((item) => {
+        tempData[item.date] = {
+          note:item.note,
+          color:item.color
+        }
+      })
+      setDateData(tempData)
+    })
+    .catch(err => window.alert(err))
+  },[])
 
   const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
   const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
@@ -37,12 +62,29 @@ export default function Calendar() {
     setModalState({ isOpen: true, date: dateStr });
   };
 
-  const handleSave = () => {
+  const handleSave = async() => {
+    const newData = { date: modalState.date, note: activeNote, color: activeColor }
     setDateData((prev) => ({
-      ...prev,
-      [modalState.date]: { note: activeNote, color: activeColor },
-    }));
-    closeModal();
+      ...prev, [modalState.date] : {note: activeNote, color: activeColor}}));
+    try{
+        const response=await fetch(`http://localhost:${SERVER_PORT}/api/update`,{
+            method:"POST",
+            credentials:"include",
+            headers:{
+                "Content-type":"application/json"
+            },
+            body: JSON.stringify(newData)
+        })
+        if(!response.ok)
+            throw new Error("Invalid Credentials")
+    }
+    catch(err){
+        window.alert(err)
+    }
+    finally{
+      console.log(newData);
+      closeModal();
+    }
   };
 
   const closeModal = () => {
