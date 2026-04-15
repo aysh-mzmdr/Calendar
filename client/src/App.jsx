@@ -40,6 +40,7 @@ export default function Calendar() {
     fetch(`http://localhost:${SERVER_PORT}/api/getDates`,{credentials:'include'})
     .then(response => response.json())
     .then(data => {
+      
       const tempData = {};
       data.forEach((item) => {
         tempData[item.date] = {
@@ -137,8 +138,9 @@ export default function Calendar() {
                 ))}
 
                 {Array.from({ length: daysInMonth }).map((_, i) => {
-                  const dayNum = i + 1;
-                  const dateStr = `${currentYear}-${monthIndex}-${dayNum}`;
+                  const monthNum = String(monthIndex + 1).padStart(2, '0');
+                  const dayNum = String(i+1).padStart(2, '0');
+                  const dateStr = `${currentYear}-${monthNum}-${dayNum}`;
                   const data = dateData[dateStr];
                   const hasNote = data?.note?.trim().length > 0;
                   const colorClass = data?.color ? styles[data.color] : '';
