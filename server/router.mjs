@@ -17,7 +17,6 @@ router.post("/api/update", async (request,response) => {
 
 router.get("/api/getDates",async(request,response) => {
     const data = await pool.query("SELECT TO_CHAR(date,'YYYY-MM-DD') AS date,color,note FROM dates")
-    console.log(data.rows)
     const dateData = data.rows
     response.send(dateData)
 })
