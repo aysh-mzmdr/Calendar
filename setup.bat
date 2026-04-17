@@ -64,3 +64,5 @@ if not exist "%DB_PATH%" (
  
 echo.
 echo [OK] Successful Setup!
+
+pause

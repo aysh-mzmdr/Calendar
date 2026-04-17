@@ -50,7 +50,6 @@ router.get("/api/getDates",async(request,response) => {
             }
         )
     })
-    console.log(data)
     response.send(data)
 })
 
