@@ -2,6 +2,7 @@
 setlocal
 
 set DB_PATH=.\server\calendar.db
+set SERVER_DIR=.\server
 
 echo ==========================================
 echo Installing required node packages...
