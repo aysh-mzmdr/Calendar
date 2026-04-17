@@ -22,6 +22,25 @@ router.post("/api/update", async (request,response) => {
     }
 })
 
+router.delete("/api/delete", async (request, response) => {
+    const { date } = request.body
+    try {
+        await new Promise((resolve, reject) => {
+            db.run(`DELETE FROM dates WHERE date = ?`, [date],
+                function(err) {
+                    if (err) reject(err)
+                    else resolve(this)
+                }
+            )
+        })
+        return response.sendStatus(200)
+    }
+    catch (err) {
+        console.log(err)
+        return response.sendStatus(500)
+    }
+})
+
 router.get("/api/getDates",async(request,response) => {
     const data = await new Promise((resolve, reject) => {
         db.all("SELECT * FROM dates",
@@ -31,6 +50,7 @@ router.get("/api/getDates",async(request,response) => {
             }
         )
     })
+    console.log(data)
     response.send(data)
 })
 
