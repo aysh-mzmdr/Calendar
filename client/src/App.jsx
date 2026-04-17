@@ -88,6 +88,28 @@ export default function Calendar() {
     }
   };
 
+  const handleDelete = async () => {
+    const date = modalState.date;
+    setDateData((prev) => {
+      const next = { ...prev };
+      delete next[date];
+      return next;
+    });
+    try {
+      const response = await fetch(`http://localhost:${SERVER_PORT}/api/delete`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date }),
+      });
+      if (!response.ok) throw new Error('Delete failed');
+    } catch (err) {
+      window.alert(err);
+    } finally {
+      closeModal();
+    }
+  };
+
   const closeModal = () => {
     setModalState({ isOpen: false, date: null });
   };
@@ -95,7 +117,7 @@ export default function Calendar() {
   const formatDateLabel = (dateStr) => {
     if (!dateStr) return '';
     const [year, month, day] = dateStr.split('-');
-    return `${MONTHS[parseInt(month)]} ${day}, ${year}`;
+    return `${MONTHS[parseInt(month-1)]} ${day}, ${year}`;
   };
 
   const toggleTheme = () => {
@@ -200,8 +222,11 @@ export default function Calendar() {
             </div>
 
             <div className={styles.modalActions}>
+              {dateData[modalState.date] && (
+                <button className={styles.deleteBtn} onClick={() => {if(window.confirm("Do you want to delete the contents of the day?")) handleDelete()}}>Delete</button>
+              )}
               <button className={styles.cancelBtn} onClick={closeModal}>Cancel</button>
-              <button className={styles.saveBtn} onClick={handleSave}>Save Changes</button>
+              <button className={styles.saveBtn} onClick={() => {if(window.confirm("Do you want to save contents of the day?")) handleSave()}}>Save Changes</button>
             </div>
           </div>
         </div>

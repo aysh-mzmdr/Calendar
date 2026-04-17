@@ -318,17 +318,29 @@ body{
 .modalActions {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 12px;
   margin-top: 28px;
 }
 
-.cancelBtn, .saveBtn {
+.cancelBtn, .saveBtn, .deleteBtn {
   padding: 12px 24px;
   border-radius: 10px;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.deleteBtn {
+  background: transparent;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  margin-right: auto;
+}
+
+.deleteBtn:hover {
+  background: #ef444420;
 }
 
 .cancelBtn {
