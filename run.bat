@@ -6,6 +6,29 @@ set SERVER_DIR=.\server
 set CLIENT_DIR=.\client
 
 echo ==========================================
+echo Checking .env file...
+echo ==========================================
+
+if not exist ".env" (
+    if exist ".env.example" (
+        copy ".env.example" ".env" >nul
+        echo [OK] .env created from .env.example.
+    ) else (
+        echo [INFO] .env.example not found. Creating .env with defaults...
+        (
+            echo SERVER_PORT = 3000
+            echo CLIENT_PORT = 5173
+            echo.
+            echo VITE_SERVER_PORT = 3000
+        ) > ".env"
+        echo [OK] .env created with default ports.
+    )
+    echo Edit .env if your ports are different.
+) else (
+    echo [OK] .env already exists.
+)
+
+echo ==========================================
 echo Checking for SQLite database...
 echo ==========================================
 
@@ -29,8 +52,9 @@ echo ------------------------------------------
 start "Node Server (Backend)" /D "%SERVER_DIR%" cmd /c "npm run dev"
 start "React Client (Frontend)" /D "%CLIENT_DIR%" cmd /c "npm run dev"
 
-echo Both servers are starting in new windows!
-echo Close those new terminal windows when you want to stop the servers.
+echo Both servers are starting in new windows.
+echo.
+echo Open your browser at: http://localhost:%CLIENT_PORT%/
 echo.
 
 pause
